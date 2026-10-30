@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screening History</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">AI Resume <span>Screener</span></div>
+        <a href="{{ url_for('index') }}" class="btn-nav">← Back to Home</a>
+    </nav>
+
+    <div class="container">
+        <div class="header-text" style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1>Database History</h1>
+                <p>All past screening records.</p>
+            </div>
+            <a href="{{ url_for('export_csv') }}" class="btn-export">Export as CSV ⬇</a>
+        </div>
+
+        <div class="table-container">
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Job Role</th>
+                        <th>Candidate</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in records %}
+                    <tr>
+                        <td>{{ r.date_screened.strftime('%d %b %Y, %I:%M %p') }}</td>
+                        <td>{{ r.job_title }}</td>
+                        <td>{{ r.candidate_name }}</td>
+                        <td><strong>{{ r.match_score }}%</strong></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="4" style="text-align: center;">No history found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

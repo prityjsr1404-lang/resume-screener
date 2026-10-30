@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screening Results | AI Resume Screener</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">AI Resume <span>Screener</span></div>
+        <div style="display: flex; gap: 15px;">
+            <a href="{{ url_for('index') }}" class="btn-nav">← New Search</a>
+            <a href="{{ url_for('history') }}" class="btn-nav">View History</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="header-text">
+            <h1>Results for: <span style="color: var(--primary);">{{ job_title }}</span></h1>
+            <p>Here are the candidates ranked by AI match score based on your Job Description.</p>
+        </div>
+
+        <div class="table-container">
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th width="10%">Rank</th>
+                        <th width="30%">Candidate File</th>
+                        <th width="35%">Match Score</th>
+                        <th width="25%">Detected Skills</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                    <tr>
+                        <td><span class="rank-badge">#{{ loop.index }}</span></td>
+                        <td>
+                            <div class="candidate-name">
+                                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right:5px; vertical-align:middle;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                {{ result.filename }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="score-wrapper">
+                                
+                                    <div class="progress-bar">
+    {% if result.score > 50 %}
+        <div class="progress bg-green" style="width: {{ result.score }}%;"></div>
+    {% elif result.score > 25 %}
+        <div class="progress bg-orange" style="width: {{ result.score }}%;"></div>
+    {% else %}
+        <div class="progress bg-red" style="width: {{ result.score }}%;"></div>
+    {% endif %}
+</div>
+                                <span class="score-text">{{ result.score }}%</span>
+                            </div>
+                        </td>
+                        <td>
+                            {% if result.skills != 'Not Detected' %}
+                                <span class="skills-text">{{ result.skills }}</span>
+                            {% else %}
+                                <span class="skills-text text-muted">None</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

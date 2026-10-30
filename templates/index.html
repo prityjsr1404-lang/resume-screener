@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Screener Pro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">AI Resume <span>Screener</span></div>
+        <a href="{{ url_for('history') }}" class="btn-nav">View History</a>
+    </nav>
+
+    <div class="container">
+        <div class="header-text">
+            <h1>Find the Perfect Candidate</h1>
+            <p>Paste the Job Description and upload multiple resumes. Our AI will instantly rank them based on relevance.</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="alert {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="POST" enctype="multipart/form-data" class="glass-form" id="screeningForm">
+            <div class="form-group">
+                <label>Job Role Title</label>
+                <input type="text" name="job_title" placeholder="e.g. Python Developer" required>
+            </div>
+
+            <div class="form-group">
+                <label>Job Description (JD)</label>
+                <textarea name="job_description" rows="6" placeholder="Paste the job requirements here..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Upload Resumes (PDF only)</label>
+                <div class="file-drop-area">
+                    <span class="fake-btn">Choose files</span>
+                    <span class="file-msg">or drag and drop resumes here</span>
+                    <input class="file-input" type="file" name="resumes" accept=".pdf" multiple required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary" id="submitBtn">
+                <span class="btn-text">Screen Resumes</span>
+                <span class="loader" id="loader"></span>
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // File upload UI update
+        const fileInput = document.querySelector('.file-input');
+        const fileMsg = document.querySelector('.file-msg');
+        fileInput.addEventListener('change', () => {
+            let files = fileInput.files;
+            if(files.length > 1) fileMsg.textContent = `${files.length} files selected`;
+            else if(files.length === 1) fileMsg.textContent = files[0].name;
+        });
+
+        // Loading spinner on submit
+        document.getElementById('screeningForm').addEventListener('submit', function() {
+            document.querySelector('.btn-text').style.display = 'none';
+            document.getElementById('loader').style.display = 'inline-block';
+            document.getElementById('submitBtn').style.pointerEvents = 'none';
+        });
+    </script>
+</body>
+</html>

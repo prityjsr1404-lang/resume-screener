@@ -1,0 +1,154 @@
+:root {
+    --bg-color: #f4f7f6;
+    --card-bg: #ffffff;
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+    --border: #e5e7eb;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+body { background-color: var(--bg-color); color: var(--text-main); }
+
+/* Navbar */
+.navbar {
+    background: white; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100;
+}
+.logo { font-size: 1.5rem; font-weight: 700; color: #111827; }
+.logo span { color: var(--primary); }
+.btn-nav { text-decoration: none; color: var(--text-main); font-weight: 500; transition: 0.3s; }
+.btn-nav:hover { color: var(--primary); }
+
+/* Container */
+.container { max-width: 900px; margin: 3rem auto; padding: 0 1rem; }
+.header-text { text-align: center; margin-bottom: 2.5rem; }
+.header-text h1 { font-size: 2.5rem; color: #111827; margin-bottom: 0.5rem; }
+.header-text p { color: var(--text-muted); font-size: 1.1rem; }
+
+/* Glass Form */
+.glass-form {
+    background: var(--card-bg); padding: 3rem; border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08); border: 1px solid var(--border);
+}
+.form-group { margin-bottom: 1.5rem; }
+label { display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151; }
+input[type="text"], textarea {
+    width: 100%; padding: 1rem; border: 2px solid var(--border); border-radius: 8px;
+    font-size: 1rem; background: #f9fafb; transition: 0.3s;
+}
+input[type="text"]:focus, textarea:focus { outline: none; border-color: var(--primary); background: white; }
+
+/* Drag & Drop Area */
+.file-drop-area {
+    border: 2px dashed var(--border); padding: 2rem; text-align: center; border-radius: 8px;
+    background: #f9fafb; position: relative; transition: 0.3s; cursor: pointer;
+}
+.file-drop-area:hover { border-color: var(--primary); background: #eef2ff; }
+.fake-btn { background: var(--primary); color: white; padding: 0.5rem 1rem; border-radius: 4px; font-weight: 500; margin-right: 10px; }
+.file-msg { color: var(--text-muted); font-size: 0.95rem; }
+.file-input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+
+/* Buttons */
+.btn-primary {
+    background: var(--primary); color: white; padding: 1rem 2rem; border: none; border-radius: 8px;
+    font-size: 1.1rem; font-weight: 600; cursor: pointer; width: 100%; transition: 0.3s;
+    display: flex; justify-content: center; align-items: center;
+}
+.btn-primary:hover { background: var(--primary-hover); }
+.btn-export {
+    background: #10b981; color: white; padding: 0.6rem 1.2rem; border-radius: 6px;
+    text-decoration: none; font-weight: 500; transition: 0.3s;
+}
+.btn-export:hover { background: #059669; }
+
+/* Loader */
+.loader {
+    display: none; width: 20px; height: 20px; border: 3px solid white;
+    border-top: 3px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;
+    margin-left: 10px;
+}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* Tables */
+.table-container { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid var(--border); }
+.results-table { width: 100%; border-collapse: collapse; text-align: left; }
+.results-table th, .results-table td { padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border); }
+.results-table th { background: #f9fafb; color: var(--text-muted); font-weight: 600; font-size: 0.9rem; text-transform: uppercase; }
+.rank-badge { background: #e5e7eb; color: #374151; padding: 0.3rem 0.6rem; border-radius: 4px; font-weight: 700; font-size: 0.9rem; }
+.progress-bar { width: 100%; max-width: 150px; height: 8px; background: #e5e7eb; border-radius: 4px; display: inline-block; margin-right: 10px; vertical-align: middle; }
+.progress { height: 100%; border-radius: 4px; }
+.score-text { font-weight: 600; font-size: 0.95rem; vertical-align: middle; }
+.skills-text { font-size: 0.85rem; color: var(--primary); background: #eef2ff; padding: 0.3rem 0.6rem; border-radius: 4px; }
+.alert { padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-weight: 500; text-align: center; }
+.alert.danger { background: #fee2e2; color: #991b1b; border: 1px solid #f87171; }
+/* =========================================
+   RESULTS TABLE & DASHBOARD STYLES
+   ========================================= */
+
+/* Candidate Name Styling */
+.candidate-name {
+    font-weight: 600;
+    color: #1f2937;
+    display: flex;
+    align-items: center;
+}
+
+/* Score Wrapper (Progress bar + Percentage text) */
+.score-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Progress Bar Container */
+.progress-bar {
+    flex: 1;
+    height: 8px;
+    background-color: #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    max-width: 150px;
+}
+
+/* Progress Bar Fill */
+.progress {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 1s ease-in-out;
+}
+
+/* Score Text */
+.score-text {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #111827;
+    min-width: 45px;
+}
+
+/* Skills Badge */
+.skills-text {
+    display: inline-block;
+    background: #e0e7ff;
+    color: #4338ca;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.skills-text.text-muted {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+/* Table Hover Effect */
+.results-table tbody tr {
+    transition: background-color 0.2s;
+}
+.results-table tbody tr:hover {
+    background-color: #f8fafc;
+}
