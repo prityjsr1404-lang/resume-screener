@@ -1,10 +1,7 @@
 import os
-import pandas as pd
 from flask import Flask, render_template, request, redirect, url_for, flash, Response
 from werkzeug.utils import secure_filename
 import PyPDF2
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -49,8 +46,20 @@ def extract_text_from_pdf(pdf_path):
         print(f"Error: {e}")
     return text
 
+# Naya Function: Bina scikit-learn ke match score calculate karne ke liye
+def calculate_match_score(jd_text, resume_text):
+    jd_words = set(jd_text.lower().split())
+    resume_words = set(resume_text.lower().split())
+    
+    common_words = jd_words.intersection(resume_words)
+    
+    if len(jd_words) == 0:
+        return 0
+        
+    score = (len(common_words) / len(jd_words)) * 100
+    return min(round(score, 2), 100)
+
 def extract_key_skills(text):
-    # AI ke bina basic skill extraction (aap isko aur advance kar sakte hain)
     common_skills = ["python", "java", "c++", "html", "css", "javascript", "flask", "sql", "react", "machine learning", "data analysis"]
     found_skills = [skill.upper() for skill in common_skills if skill in text.lower()]
     return ", ".join(found_skills) if found_skills else "Not Detected"
@@ -71,13 +80,6 @@ def index():
             return redirect(request.url)
 
         results = []
-        vectorizer = TfidfVectorizer(stop_words='english')
-        
-        try:
-            jd_vector = vectorizer.fit_transform([job_description])
-        except ValueError:
-            flash("Job description is too short.", "danger")
-            return redirect(request.url)
 
         for file in uploaded_files:
             if file and allowed_file(file.filename):
@@ -88,9 +90,8 @@ def index():
                 resume_text = extract_text_from_pdf(filepath)
                 
                 if resume_text.strip():
-                    resume_vector = vectorizer.transform([resume_text])
-                    similarity = cosine_similarity(jd_vector, resume_vector)[0][0]
-                    score = round(similarity * 100, 2)
+                    # Naya Logic Yahan Use Ho Raha Hai
+                    score = calculate_match_score(job_description, resume_text)
                     
                     # Extract Skills
                     skills = extract_key_skills(resume_text)
@@ -110,14 +111,14 @@ def index():
 
     return render_template('index.html')
 
-# Route to Export CSV
 @app.route('/export')
 def export_csv():
     records = ScreeningResult.query.all()
-    data = [{"Job Role": r.job_title, "Candidate": r.candidate_name, "Score (%)": r.match_score, "Date": r.date_screened.strftime('%Y-%m-%d %H:%M')} for r in records]
     
-    df = pd.DataFrame(data)
-    csv_data = df.to_csv(index=False)
+    # Simple CSV format generate karna bina Pandas ke
+    csv_data = "Job Role,Candidate,Score (%),Date\n"
+    for r in records:
+        csv_data += f'"{r.job_title}","{r.candidate_name}",{r.match_score},"{r.date_screened.strftime("%Y-%m-%d %H:%M")}"\n'
     
     return Response(
         csv_data,
@@ -125,7 +126,6 @@ def export_csv():
         headers={"Content-disposition": "attachment; filename=screening_history.csv"}
     )
 
-# Route for History Dashboard
 @app.route('/history')
 def history():
     records = ScreeningResult.query.order_by(ScreeningResult.date_screened.desc()).all()
